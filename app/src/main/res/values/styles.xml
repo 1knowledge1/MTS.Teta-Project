@@ -8,4 +8,20 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorOnPrimary">@color/black</item>
     </style>
+
+    <style name="Widget.App.Chip.Filter" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Chip.Filter</item>
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="chipStrokeWidth">@dimen/dimen_1</item>
+        <item name="textStartPadding">@dimen/dimen_8</item>
+        <item name="textEndPadding">@dimen/dimen_8</item>
+        <item name="android:textSize">@dimen/font_size_10</item>
+        <item name="chipMinHeight">@dimen/dimen_20</item>
+        <item name="chipIconSize">@dimen/dimen_16</item>
+        <item name="chipMinTouchTargetSize">@dimen/dimen_24</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Chip.Filter" parent="">
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
 </resources>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dimen_50"
+    android:background="@color/background_grey">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_item_movie"
+        android:layout_width="@dimen/dimen_150"
+        android:layout_height="@dimen/dimen_216"
+        app:cardCornerRadius="@dimen/dimen_10"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_item_movie"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:src="@drawable/wrath_of_man"
+            android:scaleType="centerCrop" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_item_movie_title"
+        android:layout_width="@dimen/dimen_150"
+        android:layout_height="wrap_content"
+        tools:text="Гнев человеческий"
+        android:textSize="@dimen/font_size_14"
+        android:layout_marginTop="@dimen/dimen_8"
+        app:layout_constraintTop_toBottomOf="@id/cv_item_movie"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_item_movie_description"
+        android:layout_width="@dimen/dimen_150"
+        android:layout_height="wrap_content"
+        tools:text="Эйч — загадочный и холодный на вид джентльмен, но внутри него пылает жажда справедливости. Преследуя..."
+        android:textSize="@dimen/font_size_12"
+        android:maxLines="5"
+        android:ellipsize="end"
+        android:layout_marginTop="@dimen/dimen_10"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_movie_title"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_item_rating_star_1"
+        android:layout_width="@dimen/dimen_14"
+        android:layout_height="@dimen/dimen_14"
+        android:src="@drawable/ic_rating_outline_star_16"
+        android:layout_marginTop="@dimen/dimen_16"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_movie_description"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_item_rating_star_2"
+        android:layout_width="@dimen/dimen_14"
+        android:layout_height="@dimen/dimen_14"
+        android:src="@drawable/ic_rating_outline_star_16"
+        android:layout_marginTop="@dimen/dimen_16"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_movie_description"
+        app:layout_constraintStart_toEndOf="@id/iv_item_rating_star_1" />
+
+    <ImageView
+        android:id="@+id/iv_item_rating_star_3"
+        android:layout_width="@dimen/dimen_14"
+        android:layout_height="@dimen/dimen_14"
+        android:src="@drawable/ic_rating_outline_star_16"
+        android:layout_marginTop="@dimen/dimen_16"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_movie_description"
+        app:layout_constraintStart_toEndOf="@id/iv_item_rating_star_2" />
+
+    <ImageView
+        android:id="@+id/iv_item_rating_star_4"
+        android:layout_width="@dimen/dimen_14"
+        android:layout_height="@dimen/dimen_14"
+        android:src="@drawable/ic_rating_outline_star_16"
+        android:layout_marginTop="@dimen/dimen_16"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_movie_description"
+        app:layout_constraintStart_toEndOf="@id/iv_item_rating_star_3" />
+
+    <ImageView
+        android:id="@+id/iv_item_rating_star_5"
+        android:layout_width="@dimen/dimen_14"
+        android:layout_height="@dimen/dimen_14"
+        android:src="@drawable/ic_rating_outline_star_16"
+        android:layout_marginTop="@dimen/dimen_16"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_movie_description"
+        app:layout_constraintStart_toEndOf="@id/iv_item_rating_star_4" />
+
+    <TextView
+        android:id="@+id/tv_item_movie_age_rating"
+        android:layout_width="@dimen/dimen_20"
+        android:layout_height="@dimen/dimen_20"
+        tools:text="@string/movie_age_rating_18"
+        android:textSize="@dimen/font_size_8"
+        android:gravity="center"
+        android:background="@drawable/movie_age_rating_outline"
+        android:layout_marginTop="@dimen/dimen_14"
+        app:layout_constraintEnd_toEndOf="@id/cv_item_movie"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_movie_description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

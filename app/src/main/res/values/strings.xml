@@ -11,4 +11,6 @@
     <string name="actor_hartnett">Джош Харнетт</string>
     <string name="menu_item_home">Главная</string>
     <string name="menu_item_profile">Профиль</string>
+    <string name="popular_now">Популярное сейчас</string>
+    <string name="profile">Профиль</string>
 </resources>
