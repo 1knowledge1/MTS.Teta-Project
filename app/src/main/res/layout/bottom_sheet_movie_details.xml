@@ -38,8 +38,8 @@
 
         <TextView
             android:id="@+id/tv_movie_age_rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dimen_40"
+            android:layout_height="@dimen/dimen_40"
             android:text="@string/movie_age_rating_18"
             android:textSize="@dimen/font_size_14"
             android:gravity="center"
@@ -61,46 +61,46 @@
             app:layout_constraintTop_toBottomOf="@id/tv_movie_release_date" />
 
         <ImageView
-            android:id="@+id/rating_star_1"
+            android:id="@+id/iv_rating_star_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_rating_filled_star_16"
+            android:src="@drawable/ic_rating_outline_star_16"
             android:layout_marginTop="@dimen/dimen_8"
             android:layout_marginStart="@dimen/dimen_20"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_movie_title" />
 
         <ImageView
-            android:id="@+id/rating_star_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_rating_filled_star_16"
-            app:layout_constraintStart_toEndOf="@id/rating_star_1"
-            app:layout_constraintTop_toTopOf="@id/rating_star_1" />
-
-        <ImageView
-            android:id="@+id/rating_star_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_rating_filled_star_16"
-            app:layout_constraintStart_toEndOf="@id/rating_star_2"
-            app:layout_constraintTop_toTopOf="@id/rating_star_2" />
-
-        <ImageView
-            android:id="@+id/rating_star_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_rating_filled_star_16"
-            app:layout_constraintStart_toEndOf="@id/rating_star_3"
-            app:layout_constraintTop_toTopOf="@id/rating_star_3" />
-
-        <ImageView
-            android:id="@+id/rating_star_5"
+            android:id="@+id/iv_rating_star_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_rating_outline_star_16"
-            app:layout_constraintStart_toEndOf="@id/rating_star_4"
-            app:layout_constraintTop_toTopOf="@id/rating_star_4" />
+            app:layout_constraintStart_toEndOf="@id/iv_rating_star_1"
+            app:layout_constraintTop_toTopOf="@id/iv_rating_star_1" />
+
+        <ImageView
+            android:id="@+id/iv_rating_star_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_rating_outline_star_16"
+            app:layout_constraintStart_toEndOf="@id/iv_rating_star_2"
+            app:layout_constraintTop_toTopOf="@id/iv_rating_star_2" />
+
+        <ImageView
+            android:id="@+id/iv_rating_star_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_rating_outline_star_16"
+            app:layout_constraintStart_toEndOf="@id/iv_rating_star_3"
+            app:layout_constraintTop_toTopOf="@id/iv_rating_star_3" />
+
+        <ImageView
+            android:id="@+id/iv_rating_star_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_rating_outline_star_16"
+            app:layout_constraintStart_toEndOf="@id/iv_rating_star_4"
+            app:layout_constraintTop_toTopOf="@id/iv_rating_star_4" />
 
         <TextView
             android:id="@+id/tv_movie_description"
@@ -113,7 +113,7 @@
             android:layout_marginStart="@dimen/dimen_20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rating_star_1" />
+            app:layout_constraintTop_toBottomOf="@id/iv_rating_star_1" />
 
         <TextView
             android:id="@+id/tv_movie_actors"
