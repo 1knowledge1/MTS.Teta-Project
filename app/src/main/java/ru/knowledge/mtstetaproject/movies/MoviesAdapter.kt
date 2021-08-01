@@ -10,7 +10,7 @@ class MoviesAdapter(
     private val startListener: StartFragmentDetailsListener?
     ) : RecyclerView.Adapter<MovieViewHolder>() {
 
-    private var mMovies = emptyList<MovieDto>()
+    private var mMovies: MutableList<MovieDto> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -25,7 +25,10 @@ class MoviesAdapter(
     override fun getItemCount(): Int = mMovies.size
 
     fun setMovies(movies: List<MovieDto>) {
-        mMovies = movies
+        if (mMovies.isNotEmpty()) {
+            mMovies.clear()
+        }
+        mMovies.addAll(movies)
         notifyDataSetChanged()
     }
 }
