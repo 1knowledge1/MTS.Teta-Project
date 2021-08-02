@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity(), StartFragmentDetailsListener {
         }
     }
 
-    override fun onStartFragmentDetails(moviePosition: Int) {
+    override fun onStartFragmentDetails(movieId: Int) {
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.main_fragment_container, MovieDetailsFragment.newInstance(moviePosition))
+            replace(R.id.main_fragment_container, MovieDetailsFragment.newInstance(movieId))
             addToBackStack(null)
             commit()
         }

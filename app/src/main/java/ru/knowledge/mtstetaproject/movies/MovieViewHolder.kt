@@ -10,7 +10,7 @@ import ru.knowledge.mtstetaproject.R
 import ru.knowledge.mtstetaproject.movies.data.MovieDto
 
 abstract class MovieViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    abstract fun bind(movie: MovieDto, position: Int)
+    abstract fun bind(movie: MovieDto, movieId: Int)
 }
 
 class DefaultMovieViewHolder(
@@ -33,7 +33,7 @@ class DefaultMovieViewHolder(
         R.drawable.ic_rating_filled_star_16,
         null)
 
-    override fun bind(movie: MovieDto, position: Int) {
+    override fun bind(movie: MovieDto, movieId: Int) {
         image.load(movie.imageUrl)
         textTitle.text = movie.title
         textDescription.text = movie.description
@@ -44,7 +44,7 @@ class DefaultMovieViewHolder(
             starImagesRating[i].setImageDrawable(iconStar)
         }
         itemView.setOnClickListener{
-            startFragmentDetailsListener?.onStartFragmentDetails(position)
+            startFragmentDetailsListener?.onStartFragmentDetails(movieId)
         }
     }
 

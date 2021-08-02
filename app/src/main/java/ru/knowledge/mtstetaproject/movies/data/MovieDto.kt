@@ -1,6 +1,7 @@
 package ru.knowledge.mtstetaproject.movies.data
 
 data class MovieDto(
+    val id: Int,
     val title: String,
     val description: String,
     val rateScore: Int,
