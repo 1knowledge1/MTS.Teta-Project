@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.knowledge.mtstetaproject.movies.data.GenreDto
@@ -15,32 +16,31 @@ class MovieViewModel : ViewModel() {
 
     private val repository: MovieRepository = MovieRepository()
 
-    val movieList: LiveData<List<MovieDto>> get() = _movieList
-    private val _movieList = MutableLiveData<List<MovieDto>>()
+    val movieList: LiveData<List<MovieDto>> get() = mutableMovieList
+    private val mutableMovieList = MutableLiveData<List<MovieDto>>()
 
-    val errorState: LiveData<String> get() = _errorState
-    private val _errorState = MutableLiveData<String>()
+    val errorState: LiveData<String> get() = mutableErrorState
+    private val mutableErrorState = MutableLiveData<String>()
 
     val genresChecked = mutableSetOf<Int>()
 
     init {
-        _movieList.postValue(repository.getNextMovies())
+        mutableMovieList.postValue(repository.getNextMovies())
     }
 
-    fun refreshMovies(){
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val movies = repository.getRefreshMovies()
-                _movieList.postValue(movies)
-            } catch (e: Exception) {
-                Log.d("MyException", "$e")
-                _errorState.postValue("Network error")
-            }
+    fun refreshMovies() {
+        val handler = CoroutineExceptionHandler { context, exception ->
+            Log.d("MovieViewModel", "refreshMovies exception $exception")
+            mutableErrorState.postValue("Network error")
+        }
+        viewModelScope.launch(Dispatchers.IO + handler) {
+            val movies = repository.getRefreshMovies()
+            mutableMovieList.postValue(movies)
         }
     }
 
     fun resetError() {
-        _errorState.postValue("")
+        mutableErrorState.postValue("")
     }
 
     fun getGenres(): List<GenreDto> {
