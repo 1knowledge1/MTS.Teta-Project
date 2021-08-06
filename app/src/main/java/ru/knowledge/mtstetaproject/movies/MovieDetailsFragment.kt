@@ -8,13 +8,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import coil.load
 import ru.knowledge.mtstetaproject.R
 import ru.knowledge.mtstetaproject.movies.data.MoviesModel
 
 class MovieDetailsFragment : Fragment() {
 
-    private val moviesList = MoviesModel.getMovies()
+    private lateinit var movieViewModel: MovieViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,12 +27,15 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        movieViewModel = activity?.let {
+            ViewModelProvider(it)[MovieViewModel::class.java]
+        } ?: throw Exception("Activity is null")
         initViews(view)
     }
 
     private fun initViews(view: View) {
-        val position = arguments?.getInt(MOVIE_POSITION) ?: 0
-        val movie = moviesList[position]
+        val movieId = arguments?.getInt(MOVIE_ID) ?: 0
+        val movie = movieViewModel.getMovieById(movieId)
         val ageRestriction = "${movie.ageRestriction}+"
         view.apply{
             findViewById<ImageView>(R.id.iv_movie_details_poster).load(movie.imageUrl)
@@ -65,12 +69,12 @@ class MovieDetailsFragment : Fragment() {
 
     companion object {
         const val MAX_RATE_SCORE = 5
-        const val MOVIE_POSITION = "moviePosition"
+        const val MOVIE_ID = "movieID"
 
-        fun newInstance(moviePosition: Int): MovieDetailsFragment {
+        fun newInstance(movieId: Int): MovieDetailsFragment {
             val fragment = MovieDetailsFragment()
             val args = Bundle()
-            args.putInt(MOVIE_POSITION, moviePosition)
+            args.putInt(MOVIE_ID, movieId)
             fragment.arguments = args
             return fragment
         }
