@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import ru.knowledge.mtstetaproject.R
-import ru.knowledge.mtstetaproject.movies.data.MoviesModel
 
 class MovieDetailsFragment : Fragment() {
 
