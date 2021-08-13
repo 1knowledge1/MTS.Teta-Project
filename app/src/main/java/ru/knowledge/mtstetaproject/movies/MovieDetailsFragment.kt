@@ -14,7 +14,7 @@ import ru.knowledge.mtstetaproject.R
 
 class MovieDetailsFragment : Fragment() {
 
-    private lateinit var movieViewModel: MovieViewModel
+    private lateinit var movieViewModel: MovieDetailsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,7 +27,7 @@ class MovieDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         movieViewModel = activity?.let {
-            ViewModelProvider(it)[MovieViewModel::class.java]
+            ViewModelProvider(it)[MovieDetailsViewModel::class.java]
         } ?: throw Exception("Activity is null")
         initViews(view)
     }
