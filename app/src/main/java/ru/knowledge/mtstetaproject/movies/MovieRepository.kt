@@ -39,4 +39,8 @@ object MovieRepository {
         }
         return currentMovies
     }
+
+    fun getMovieById(movieId: Int): MovieDto {
+        return currentMovies.find { it.id == movieId } ?: currentMovies.first()
+    }
 }
