@@ -14,8 +14,6 @@ import ru.knowledge.mtstetaproject.movies.data.MovieDto
 
 class MovieViewModel : ViewModel() {
 
-    private val repository: MovieRepository = MovieRepository()
-
     val movieList: LiveData<List<MovieDto>> get() = mutableMovieList
     private val mutableMovieList = MutableLiveData<List<MovieDto>>()
 
@@ -25,7 +23,7 @@ class MovieViewModel : ViewModel() {
     val genresChecked = mutableSetOf<Int>()
 
     init {
-        mutableMovieList.postValue(repository.getNextMovies())
+        mutableMovieList.postValue(MovieRepository.getNextMovies())
     }
 
     fun refreshMovies() {
@@ -34,7 +32,7 @@ class MovieViewModel : ViewModel() {
             mutableErrorState.postValue("Network error")
         }
         viewModelScope.launch(Dispatchers.IO + handler) {
-            val movies = repository.getRefreshMovies()
+            val movies = MovieRepository.getRefreshMovies()
             mutableMovieList.postValue(movies)
         }
     }
@@ -44,11 +42,6 @@ class MovieViewModel : ViewModel() {
     }
 
     fun getGenres(): List<GenreDto> {
-        return repository.getGenres()
-    }
-
-    fun getMovieById(movieId: Int): MovieDto {
-        val allMovies = repository.getMovies()
-        return allMovies.find { it.id == movieId } ?: allMovies.first()
+        return MovieRepository.getGenres()
     }
 }

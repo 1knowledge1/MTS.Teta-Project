@@ -6,7 +6,9 @@ import ru.knowledge.mtstetaproject.movies.data.MovieDto
 import ru.knowledge.mtstetaproject.movies.data.MoviesDataSource
 import ru.knowledge.mtstetaproject.movies.data.MoviesDataSourceImpl
 
-class MovieRepository {
+object MovieRepository {
+    private const val NUMBER_OF_MOVIES_ON_SCREEN = 6
+
     private val moviesDataSource: MoviesDataSource = MoviesDataSourceImpl()
     private val genresData: GenresData = GenresData()
     private val currentMovies = mutableListOf<MovieDto>()
@@ -38,7 +40,7 @@ class MovieRepository {
         return currentMovies
     }
 
-    companion object {
-        const val NUMBER_OF_MOVIES_ON_SCREEN = 6
+    fun getMovieById(movieId: Int): MovieDto {
+        return currentMovies.find { it.id == movieId } ?: currentMovies.first()
     }
 }

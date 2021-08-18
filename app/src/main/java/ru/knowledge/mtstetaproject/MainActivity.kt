@@ -2,56 +2,33 @@ package ru.knowledge.mtstetaproject
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.knowledge.mtstetaproject.movies.MovieDetailsFragment
-import ru.knowledge.mtstetaproject.movies.MoviesFragment
 import ru.knowledge.mtstetaproject.movies.StartFragmentDetailsListener
-import ru.knowledge.mtstetaproject.profile.ProfileFragment
 
 class MainActivity : AppCompatActivity(), StartFragmentDetailsListener {
+
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val navHostFragment = supportFragmentManager.findFragmentById(
+                R.id.main_fragment_container
+        ) as NavHostFragment
+        navController = navHostFragment.navController
+
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.page_home -> {
-                    swapFragment(MoviesFragment.newInstance())
-                    true
-                }
-                R.id.page_profile -> {
-                    swapFragment(ProfileFragment.newInstance())
-                    true
-                }
-                else -> false
-            }
-        }
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().apply {
-                add(R.id.main_fragment_container, MoviesFragment.newInstance())
-                commit()
-            }
-        }
+        bottomNavigationView.setupWithNavController(navController)
     }
 
     override fun onStartFragmentDetails(movieId: Int) {
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.main_fragment_container, MovieDetailsFragment.newInstance(movieId))
-            addToBackStack(null)
-            commit()
-        }
-    }
-
-    private fun swapFragment(fragment: Fragment) {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.main_fragment_container, fragment)
-            commit()
-        }
+        val args = bundleOf(MovieDetailsFragment.MOVIE_ID to movieId)
+        navController.navigate(R.id.action_movies_to_details, args)
     }
 }

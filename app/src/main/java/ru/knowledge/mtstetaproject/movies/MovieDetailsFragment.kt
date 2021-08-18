@@ -5,17 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import ru.knowledge.mtstetaproject.R
-import ru.knowledge.mtstetaproject.movies.data.MoviesModel
+import ru.knowledge.mtstetaproject.movies.data.MovieDto
 
 class MovieDetailsFragment : Fragment() {
 
-    private lateinit var movieViewModel: MovieViewModel
+    private lateinit var movieViewModel: MovieDetailsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,14 +30,22 @@ class MovieDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         movieViewModel = activity?.let {
-            ViewModelProvider(it)[MovieViewModel::class.java]
+            ViewModelProvider(it)[MovieDetailsViewModel::class.java]
         } ?: throw Exception("Activity is null")
-        initViews(view)
+
+        view.findViewById<ProgressBar>(R.id.pb_movie_details).visibility = View.VISIBLE
+        view.findViewById<CoordinatorLayout>(R.id.layout_movie_details).visibility = View.INVISIBLE
+
+        val movieId = arguments?.getInt(MOVIE_ID) ?: 0
+        movieViewModel.movie.observe(viewLifecycleOwner, { movie ->
+            if (movieId == movie.id) {
+                initViews(view, movie)
+            }
+        })
+        movieViewModel.getMovieById(movieId)
     }
 
-    private fun initViews(view: View) {
-        val movieId = arguments?.getInt(MOVIE_ID) ?: 0
-        val movie = movieViewModel.getMovieById(movieId)
+    private fun initViews(view: View, movie: MovieDto) {
         val ageRestriction = "${movie.ageRestriction}+"
         view.apply{
             findViewById<ImageView>(R.id.iv_movie_details_poster).load(movie.imageUrl)
@@ -65,6 +75,8 @@ class MovieDetailsFragment : Fragment() {
         for (i in 0 until maxScore) {
             starImagesRating[i].setImageDrawable(iconStar)
         }
+        view.findViewById<ProgressBar>(R.id.pb_movie_details).visibility = View.INVISIBLE
+        view.findViewById<CoordinatorLayout>(R.id.layout_movie_details).visibility = View.VISIBLE
     }
 
     companion object {
