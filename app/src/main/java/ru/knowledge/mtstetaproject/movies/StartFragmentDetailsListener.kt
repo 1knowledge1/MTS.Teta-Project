@@ -1,5 +1,5 @@
 package ru.knowledge.mtstetaproject.movies
 
 interface StartFragmentDetailsListener {
-    fun onStartFragmentDetails(movieId: Int)
+    fun onStartFragmentDetails(movieId: Long)
 }

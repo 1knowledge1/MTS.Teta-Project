@@ -1,46 +1,37 @@
 package ru.knowledge.mtstetaproject.movies
 
-import kotlinx.coroutines.delay
-import ru.knowledge.mtstetaproject.movies.data.GenresData
-import ru.knowledge.mtstetaproject.movies.data.MovieDto
-import ru.knowledge.mtstetaproject.movies.data.MoviesDataSource
-import ru.knowledge.mtstetaproject.movies.data.MoviesDataSourceImpl
+import ru.knowledge.mtstetaproject.movies.data.*
 
-object MovieRepository {
-    private const val NUMBER_OF_MOVIES_ON_SCREEN = 6
+class MovieRepository(private val movieDao: MovieDao) {
 
-    private val moviesDataSource: MoviesDataSource = MoviesDataSourceImpl()
-    private val genresData: GenresData = GenresData()
-    private val currentMovies = mutableListOf<MovieDto>()
-    private var movieCounter = NUMBER_OF_MOVIES_ON_SCREEN
-
-    fun getMovies() = currentMovies
-
-    fun getGenres() = genresData.getGenres()
-
-    suspend fun getRefreshMovies(): MutableList<MovieDto> {
-        Thread.sleep(2000)
-        //delay(2000)
-
-        // Uncomment to check exception handling
-        //throw IllegalStateException()
-        return getNextMovies()
+    suspend fun getRefreshMovies(): List<MovieDto> {
+        // Execute network request
+        return getMoviesFromDatabase()
     }
 
-    fun getNextMovies(): MutableList<MovieDto> {
-        val allMovies = moviesDataSource.getMovies()
-        currentMovies.apply {
-            clear()
-            addAll(allMovies.subList(movieCounter - NUMBER_OF_MOVIES_ON_SCREEN, movieCounter - 1))
-        }
-        movieCounter += NUMBER_OF_MOVIES_ON_SCREEN
-        if (movieCounter > allMovies.size) {
-            movieCounter = NUMBER_OF_MOVIES_ON_SCREEN
-        }
-        return currentMovies
+    suspend fun getMovieById(movieId: Long): MovieWithActors {
+        return movieDao.getMovieWithActorsById(movieId)
     }
 
-    fun getMovieById(movieId: Int): MovieDto {
-        return currentMovies.find { it.id == movieId } ?: currentMovies.first()
+    suspend fun getMoviesFromDatabase(): List<MovieDto> {
+        return movieDao.getMovies()
+    }
+
+    suspend fun getGenresFromDatabase(): List<GenreDto> {
+        return movieDao.getAllGenres()
+    }
+
+    suspend fun populateDatabase() {
+        movieDao.insertMovies(MoviesDataSourceImpl().getMovies())
+        movieDao.insertActors(ActorsDataSource().getActors())
+        movieDao.insertGenres(GenresData().getGenres())
+        movieDao.insertMovieActorCrossRefs(MovieActorCrossRefDataSource().getMovieActorCrossRef())
+    }
+
+    suspend fun deleteAll() {
+        movieDao.deleteAllActors()
+        movieDao.deleteAllMovies()
+        movieDao.deleteAllGenres()
+        movieDao.deleteAllMovieActorCrossRef()
     }
 }

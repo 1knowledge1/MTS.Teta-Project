@@ -8,18 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import ru.knowledge.mtstetaproject.App
 import ru.knowledge.mtstetaproject.R
+import ru.knowledge.mtstetaproject.movies.data.GenreDto
 
 class MoviesFragment : Fragment() {
 
     private var startFragmentDetailsListener: StartFragmentDetailsListener? = null
-    private lateinit var movieViewModel: MovieViewModel
+    private val movieViewModel: MovieViewModel by viewModels {
+        MovieViewModelFactory((activity?.application as App).repository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,13 +44,17 @@ class MoviesFragment : Fragment() {
             context?.resources?.getDimensionPixelSize(R.dimen.dimen_150) ?: DEFAULT_ITEM_SIZE)
         moviesRecycler.addItemDecoration(itemDecoration)
 
-        movieViewModel = activity?.let {
-            ViewModelProvider(it)[MovieViewModel::class.java]
-        } ?: throw Exception("Activity is null")
-
         movieViewModel.movieList.observe(viewLifecycleOwner, { movies ->
             moviesAdapter.setMovies(movies ?: emptyList())
             swipeContainer.isRefreshing = false
+        })
+
+        var isNotInitGenresChipGroup = true
+        movieViewModel.genreList.observe(viewLifecycleOwner, { genres ->
+            if (isNotInitGenresChipGroup) {
+                initGenreChipGroup(view, genres)
+                isNotInitGenresChipGroup = false
+            }
         })
 
         movieViewModel.errorState.observe(viewLifecycleOwner, { message ->
@@ -64,7 +72,8 @@ class MoviesFragment : Fragment() {
             movieViewModel.refreshMovies()
         }
 
-        initGenreChipGroup(view)
+        movieViewModel.getGenresFromDatabase()
+        movieViewModel.getMoviesFromDatabase()
     }
 
     override fun onAttach(context: Context) {
@@ -79,10 +88,9 @@ class MoviesFragment : Fragment() {
         startFragmentDetailsListener = null
     }
 
-    private fun initGenreChipGroup(view: View) {
-        val genresList = movieViewModel.getGenres()
+    private fun initGenreChipGroup(view: View, genres: List<GenreDto>) {
         val chipGroup = view.findViewById<ChipGroup>(R.id.genre_chip_group)
-        for (genre in genresList) {
+        for (genre in genres) {
             chipGroup.addView(Chip(context).apply {
                 text = genre.name.lowercase()
                 setOnCheckedChangeListener { view, isChecked ->
@@ -110,11 +118,11 @@ class MoviesFragment : Fragment() {
             setMargins(margin ?: leftMargin, topMargin, rightMargin, bottomMargin)
         }
         chipGroup.getChildAt(0).layoutParams = paramFirstView
-        val paramLastView = chipGroup.getChildAt(genresList.size - 1).layoutParams as ChipGroup.LayoutParams
+        val paramLastView = chipGroup.getChildAt(genres.size - 1).layoutParams as ChipGroup.LayoutParams
         paramLastView.apply {
             setMargins(leftMargin, topMargin, margin ?: rightMargin, bottomMargin)
         }
-        chipGroup.getChildAt(genresList.size - 1).layoutParams = paramLastView
+        chipGroup.getChildAt(genres.size - 1).layoutParams = paramLastView
     }
 
     companion object {
