@@ -6,32 +6,36 @@ class MovieRepository(private val movieDao: MovieDao) {
 
     suspend fun getRefreshMovies(): List<MovieDto> {
         // Execute network request
-        return getMoviesFromDatabase()
+        return getMovies()
     }
 
     suspend fun getMovieById(movieId: Long): MovieWithActors {
         return movieDao.getMovieWithActorsById(movieId)
     }
 
-    suspend fun getMoviesFromDatabase(): List<MovieDto> {
+    suspend fun getMovies(): List<MovieDto> {
+        val movies = movieDao.getMovies()
+        if (movies.isEmpty()) {
+            // Execute network request
+            // delete old data from database and update
+            movieDao.insertMovies(MoviesDataSourceImpl().getMovies())
+            movieDao.insertActors(ActorsDataSource().getActors())
+            movieDao.insertMovieActorCrossRefs(MovieActorCrossRefDataSource().getMovieActorCrossRef())
+        } else {
+            return movies
+        }
         return movieDao.getMovies()
     }
 
-    suspend fun getGenresFromDatabase(): List<GenreDto> {
+    suspend fun getGenres(): List<GenreDto> {
+        val genres = movieDao.getAllGenres()
+        if (genres.isEmpty()) {
+            // Execute network request
+            // delete old data from database and update
+            movieDao.insertGenres(GenresData().getGenres())
+        } else {
+            return genres
+        }
         return movieDao.getAllGenres()
-    }
-
-    suspend fun populateDatabase() {
-        movieDao.insertMovies(MoviesDataSourceImpl().getMovies())
-        movieDao.insertActors(ActorsDataSource().getActors())
-        movieDao.insertGenres(GenresData().getGenres())
-        movieDao.insertMovieActorCrossRefs(MovieActorCrossRefDataSource().getMovieActorCrossRef())
-    }
-
-    suspend fun deleteAll() {
-        movieDao.deleteAllActors()
-        movieDao.deleteAllMovies()
-        movieDao.deleteAllGenres()
-        movieDao.deleteAllMovieActorCrossRef()
     }
 }

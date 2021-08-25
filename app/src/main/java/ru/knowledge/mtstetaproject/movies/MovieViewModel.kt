@@ -22,10 +22,6 @@ class MovieViewModel(private val repository: MovieRepository) : ViewModel() {
 
     val genresChecked = mutableSetOf<Int>()
 
-    init {
-        populateDatabase()
-    }
-
     fun refreshMovies() {
         val handler = CoroutineExceptionHandler { context, exception ->
             Log.d("MovieViewModel", "refreshMovies exception $exception")
@@ -41,29 +37,17 @@ class MovieViewModel(private val repository: MovieRepository) : ViewModel() {
         mutableErrorState.postValue("")
     }
 
-    fun getGenresFromDatabase() {
+    fun getGenres() {
         viewModelScope.launch(Dispatchers.IO) {
-            val genres = repository.getGenresFromDatabase()
+            val genres = repository.getGenres()
             mutableGenreList.postValue(genres)
         }
     }
 
-    fun getMoviesFromDatabase() {
+    fun getMovies() {
         viewModelScope.launch(Dispatchers.IO) {
-            val movies = repository.getMoviesFromDatabase()
+            val movies = repository.getMovies()
             mutableMovieList.postValue(movies)
-        }
-    }
-
-    private fun populateDatabase() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.populateDatabase()
-        }
-    }
-
-    fun deleteAllDatabase() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteAll()
         }
     }
 }

@@ -72,8 +72,8 @@ class MoviesFragment : Fragment() {
             movieViewModel.refreshMovies()
         }
 
-        movieViewModel.getGenresFromDatabase()
-        movieViewModel.getMoviesFromDatabase()
+        movieViewModel.getGenres()
+        movieViewModel.getMovies()
     }
 
     override fun onAttach(context: Context) {
