@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), StartFragmentDetailsListener {
         bottomNavigationView.setupWithNavController(navController)
     }
 
-    override fun onStartFragmentDetails(movieId: Int) {
+    override fun onStartFragmentDetails(movieId: Long) {
         val args = bundleOf(MovieDetailsFragment.MOVIE_ID to movieId)
         navController.navigate(R.id.action_movies_to_details, args)
     }

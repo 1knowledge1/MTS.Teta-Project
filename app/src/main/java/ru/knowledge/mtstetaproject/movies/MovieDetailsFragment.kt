@@ -10,14 +10,19 @@ import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import coil.load
+import ru.knowledge.mtstetaproject.App
 import ru.knowledge.mtstetaproject.R
-import ru.knowledge.mtstetaproject.movies.data.MovieDto
+import ru.knowledge.mtstetaproject.movies.data.MovieWithActors
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MovieDetailsFragment : Fragment() {
 
-    private lateinit var movieViewModel: MovieDetailsViewModel
+    private val movieViewModel: MovieDetailsViewModel by viewModels {
+        MovieDetailsViewModelFactory((activity?.application as App).repository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,37 +34,37 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        movieViewModel = activity?.let {
-            ViewModelProvider(it)[MovieDetailsViewModel::class.java]
-        } ?: throw Exception("Activity is null")
 
         view.findViewById<ProgressBar>(R.id.pb_movie_details).visibility = View.VISIBLE
         view.findViewById<CoordinatorLayout>(R.id.layout_movie_details).visibility = View.INVISIBLE
 
-        val movieId = arguments?.getInt(MOVIE_ID) ?: 0
-        movieViewModel.movie.observe(viewLifecycleOwner, { movie ->
-            if (movieId == movie.id) {
-                initViews(view, movie)
+        val movieId = arguments?.getLong(MOVIE_ID) ?: 0
+        movieViewModel.movie.observe(viewLifecycleOwner, { movieWithActors ->
+            if (movieId == movieWithActors.movie.id) {
+                initViews(view, movieWithActors)
             }
         })
         movieViewModel.getMovieById(movieId)
     }
 
-    private fun initViews(view: View, movie: MovieDto) {
+    private fun initViews(view: View, movieWithActors: MovieWithActors) {
+        val movie = movieWithActors.movie
+        val actors = movieWithActors.actors
         val ageRestriction = "${movie.ageRestriction}+"
         view.apply{
             findViewById<ImageView>(R.id.iv_movie_details_poster).load(movie.imageUrl)
             findViewById<TextView>(R.id.tv_movie_genre).text = movie.genre.name.lowercase()
-            findViewById<TextView>(R.id.tv_movie_release_date).text = movie.releaseDate
+            findViewById<TextView>(R.id.tv_movie_release_date).text = dateFormatter
+                .format(movie.releaseDate)
             findViewById<TextView>(R.id.tv_movie_age_rating).text = ageRestriction
             findViewById<TextView>(R.id.tv_movie_title).text = movie.title
             findViewById<TextView>(R.id.tv_movie_description).text = movie.description
-            findViewById<ImageView>(R.id.iv_actor_1).load(movie.actors[0].imageUrl)
-            findViewById<TextView>(R.id.tv_actor_name_1).text = movie.actors[0].name
-            findViewById<ImageView>(R.id.iv_actor_2).load(movie.actors[1].imageUrl)
-            findViewById<TextView>(R.id.tv_actor_name_2).text = movie.actors[1].name
-            findViewById<ImageView>(R.id.iv_actor_3).load(movie.actors[2].imageUrl)
-            findViewById<TextView>(R.id.tv_actor_name_3).text = movie.actors[2].name
+            findViewById<ImageView>(R.id.iv_actor_1).load(actors[0].imageUrl)
+            findViewById<TextView>(R.id.tv_actor_name_1).text = actors[0].name
+            findViewById<ImageView>(R.id.iv_actor_2).load(actors[1].imageUrl)
+            findViewById<TextView>(R.id.tv_actor_name_2).text = actors[1].name
+            findViewById<ImageView>(R.id.iv_actor_3).load(actors[2].imageUrl)
+            findViewById<TextView>(R.id.tv_actor_name_3).text = actors[2].name
         }
         val iconStar = ResourcesCompat.getDrawable(
             view.context.resources,
@@ -80,6 +85,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     companion object {
+        val dateFormatter = SimpleDateFormat("dd.MM.yyyy", Locale.US)
         const val MAX_RATE_SCORE = 5
         const val MOVIE_ID = "movieID"
 

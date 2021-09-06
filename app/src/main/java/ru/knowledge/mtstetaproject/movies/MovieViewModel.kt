@@ -1,10 +1,7 @@
 package ru.knowledge.mtstetaproject.movies
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,19 +9,18 @@ import ru.knowledge.mtstetaproject.movies.data.GenreDto
 import ru.knowledge.mtstetaproject.movies.data.MovieDto
 
 
-class MovieViewModel : ViewModel() {
+class MovieViewModel(private val repository: MovieRepository) : ViewModel() {
 
     val movieList: LiveData<List<MovieDto>> get() = mutableMovieList
     private val mutableMovieList = MutableLiveData<List<MovieDto>>()
+
+    val genreList: LiveData<List<GenreDto>> get() = mutableGenreList
+    private val mutableGenreList = MutableLiveData<List<GenreDto>>()
 
     val errorState: LiveData<String> get() = mutableErrorState
     private val mutableErrorState = MutableLiveData<String>()
 
     val genresChecked = mutableSetOf<Int>()
-
-    init {
-        mutableMovieList.postValue(MovieRepository.getNextMovies())
-    }
 
     fun refreshMovies() {
         val handler = CoroutineExceptionHandler { context, exception ->
@@ -32,7 +28,7 @@ class MovieViewModel : ViewModel() {
             mutableErrorState.postValue("Network error")
         }
         viewModelScope.launch(Dispatchers.IO + handler) {
-            val movies = MovieRepository.getRefreshMovies()
+            val movies = repository.getRefreshMovies()
             mutableMovieList.postValue(movies)
         }
     }
@@ -41,7 +37,27 @@ class MovieViewModel : ViewModel() {
         mutableErrorState.postValue("")
     }
 
-    fun getGenres(): List<GenreDto> {
-        return MovieRepository.getGenres()
+    fun getGenres() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val genres = repository.getGenres()
+            mutableGenreList.postValue(genres)
+        }
+    }
+
+    fun getMovies() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val movies = repository.getMovies()
+            mutableMovieList.postValue(movies)
+        }
+    }
+}
+
+class MovieViewModelFactory(private val repository: MovieRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MovieViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return MovieViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

@@ -10,7 +10,7 @@ import ru.knowledge.mtstetaproject.R
 import ru.knowledge.mtstetaproject.movies.data.MovieDto
 
 abstract class MovieViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    abstract fun bind(movie: MovieDto, movieId: Int)
+    abstract fun bind(movie: MovieDto, movieId: Long)
 }
 
 class DefaultMovieViewHolder(
@@ -28,12 +28,16 @@ class DefaultMovieViewHolder(
         view.findViewById(R.id.iv_item_rating_star_3),
         view.findViewById(R.id.iv_item_rating_star_4),
         view.findViewById(R.id.iv_item_rating_star_5))
-    private val iconStar = ResourcesCompat.getDrawable(
+    private val iconFilledStar = ResourcesCompat.getDrawable(
         view.context.resources,
         R.drawable.ic_rating_filled_star_16,
         null)
+    private val iconOutlineStar = ResourcesCompat.getDrawable(
+        view.context.resources,
+        R.drawable.ic_rating_outline_star_16,
+        null)
 
-    override fun bind(movie: MovieDto, movieId: Int) {
+    override fun bind(movie: MovieDto, movieId: Long) {
         image.load(movie.imageUrl)
         textTitle.text = movie.title
         textDescription.text = movie.description
@@ -41,7 +45,10 @@ class DefaultMovieViewHolder(
         textAgeRating.text = mAgeRating
         val maxScore = if (movie.rateScore < 6) movie.rateScore else MAX_RATE_SCORE
         for (i in 0 until maxScore) {
-            starImagesRating[i].setImageDrawable(iconStar)
+            starImagesRating[i].setImageDrawable(iconFilledStar)
+        }
+        for (i in maxScore until MAX_RATE_SCORE) {
+            starImagesRating[i].setImageDrawable(iconOutlineStar)
         }
         itemView.setOnClickListener{
             startFragmentDetailsListener?.onStartFragmentDetails(movieId)
