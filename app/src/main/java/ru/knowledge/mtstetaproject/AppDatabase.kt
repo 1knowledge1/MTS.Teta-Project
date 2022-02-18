@@ -5,13 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import ru.knowledge.mtstetaproject.movies.data.*
+import ru.knowledge.mtstetaproject.movies.database.Converters
+import ru.knowledge.mtstetaproject.movies.database.MovieDao
+import ru.knowledge.mtstetaproject.movies.database.dto.*
 
 @Database(entities = [
         MovieDto::class,
         ActorDto::class,
         GenreDto::class,
-        MovieActorCrossRef::class], version = 1, exportSchema = false)
+        MovieActorCrossRef::class,
+        TableInfo::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 

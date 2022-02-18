@@ -1,4 +1,4 @@
-package ru.knowledge.mtstetaproject.movies
+package ru.knowledge.mtstetaproject.movies.movies
 
 import android.content.Context
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,7 +17,10 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import ru.knowledge.mtstetaproject.App
 import ru.knowledge.mtstetaproject.R
-import ru.knowledge.mtstetaproject.movies.data.GenreDto
+import ru.knowledge.mtstetaproject.movies.*
+import ru.knowledge.mtstetaproject.movies.database.dto.GenreDto
+import ru.knowledge.mtstetaproject.movies.movies.recycler.ItemOffsetDecoration
+import ru.knowledge.mtstetaproject.movies.movies.recycler.MoviesAdapter
 
 class MoviesFragment : Fragment() {
 
@@ -40,11 +44,16 @@ class MoviesFragment : Fragment() {
         val moviesAdapter = MoviesAdapter(startFragmentDetailsListener)
         moviesRecycler.adapter = moviesAdapter
         moviesRecycler.layoutManager = GridLayoutManager(context, COLUMNS_NUMBER)
-        val itemDecoration = ItemOffsetDecoration(COLUMNS_NUMBER,
-            context?.resources?.getDimensionPixelSize(R.dimen.dimen_150) ?: DEFAULT_ITEM_SIZE)
+        val itemDecoration = ItemOffsetDecoration(
+            COLUMNS_NUMBER,
+            context?.resources?.getDimensionPixelSize(R.dimen.dimen_150) ?: DEFAULT_ITEM_SIZE
+        )
         moviesRecycler.addItemDecoration(itemDecoration)
 
         movieViewModel.movieList.observe(viewLifecycleOwner, { movies ->
+            if (movies != null && movies.isNotEmpty()) {
+                view.findViewById<ProgressBar>(R.id.pb_movie_list).visibility = View.INVISIBLE
+            }
             moviesAdapter.setMovies(movies ?: emptyList())
             swipeContainer.isRefreshing = false
         })
@@ -59,6 +68,7 @@ class MoviesFragment : Fragment() {
 
         movieViewModel.errorState.observe(viewLifecycleOwner, { message ->
             if (message.isNotEmpty()) {
+                view.findViewById<ProgressBar>(R.id.pb_movie_list).visibility = View.INVISIBLE
                 Toast
                     .makeText(view.context, "Не удалось обновить: $message", Toast.LENGTH_SHORT)
                     .show()
@@ -96,14 +106,10 @@ class MoviesFragment : Fragment() {
                 setOnCheckedChangeListener { view, isChecked ->
                     if (isChecked) {
                         movieViewModel.genresChecked.add(genre.id)
-                        Toast
-                            .makeText(view.context, "Выбран ${genre.name}", Toast.LENGTH_SHORT)
-                            .show()
+                        movieViewModel.getMovies()
                     } else {
                         movieViewModel.genresChecked.remove(genre.id)
-                        Toast
-                            .makeText(view.context, "Отменен ${genre.name}", Toast.LENGTH_SHORT)
-                            .show()
+                        movieViewModel.getMovies()
                     }
                 }
                 if (genre.id in movieViewModel.genresChecked) {

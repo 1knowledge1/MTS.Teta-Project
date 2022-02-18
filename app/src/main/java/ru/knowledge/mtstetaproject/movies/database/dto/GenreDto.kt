@@ -1,4 +1,4 @@
-package ru.knowledge.mtstetaproject.movies.data
+package ru.knowledge.mtstetaproject.movies.database.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class GenreDto(
     @PrimaryKey
     @ColumnInfo(name = "genre_id")
-    val id: Int,
+    val id: Long,
     @ColumnInfo(name = "name")
     val name: String
 )

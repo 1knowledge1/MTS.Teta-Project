@@ -1,4 +1,4 @@
-package ru.knowledge.mtstetaproject.movies.data
+package ru.knowledge.mtstetaproject.movies.database
 
 import androidx.room.TypeConverter
 import java.util.*

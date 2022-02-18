@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dimen_50"
-    android:background="@color/background_grey">
+    android:layout_marginBottom="@dimen/dimen_50">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_item_movie"
@@ -96,7 +95,7 @@
         android:id="@+id/tv_item_movie_age_rating"
         android:layout_width="@dimen/dimen_20"
         android:layout_height="@dimen/dimen_20"
-        tools:text="@string/movie_age_rating_18"
+        tools:text="@string/default_age_rating"
         android:textSize="@dimen/font_size_8"
         android:gravity="center"
         android:background="@drawable/movie_age_rating_outline"

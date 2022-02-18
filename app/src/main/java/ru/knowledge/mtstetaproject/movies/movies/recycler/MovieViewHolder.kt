@@ -1,4 +1,4 @@
-package ru.knowledge.mtstetaproject.movies
+package ru.knowledge.mtstetaproject.movies.movies.recycler
 
 import android.view.View
 import android.widget.ImageView
@@ -7,7 +7,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import ru.knowledge.mtstetaproject.R
-import ru.knowledge.mtstetaproject.movies.data.MovieDto
+import ru.knowledge.mtstetaproject.movies.StartFragmentDetailsListener
+import ru.knowledge.mtstetaproject.movies.database.dto.MovieDto
 
 abstract class MovieViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bind(movie: MovieDto, movieId: Long)
@@ -39,9 +40,13 @@ class DefaultMovieViewHolder(
 
     override fun bind(movie: MovieDto, movieId: Long) {
         image.load(movie.imageUrl)
-        textTitle.text = movie.title
+        if (movie.title.isEmpty()) {
+            textTitle.text = itemView.context.getString(R.string.default_string)
+        } else {
+            textTitle.text = movie.title
+        }
         textDescription.text = movie.description
-        val mAgeRating = "${movie.ageRestriction}+"
+        val mAgeRating = movie.ageRestriction
         textAgeRating.text = mAgeRating
         val maxScore = if (movie.rateScore < 6) movie.rateScore else MAX_RATE_SCORE
         for (i in 0 until maxScore) {

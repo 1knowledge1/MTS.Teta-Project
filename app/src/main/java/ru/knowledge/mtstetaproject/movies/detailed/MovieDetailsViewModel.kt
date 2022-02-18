@@ -1,9 +1,12 @@
-package ru.knowledge.mtstetaproject.movies
+package ru.knowledge.mtstetaproject.movies.detailed
 
+import android.util.Log
 import androidx.lifecycle.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.knowledge.mtstetaproject.movies.data.MovieWithActors
+import ru.knowledge.mtstetaproject.movies.MovieRepository
+import ru.knowledge.mtstetaproject.movies.database.MovieWithActors
 
 class MovieDetailsViewModel(private val repository: MovieRepository) : ViewModel() {
 
@@ -11,7 +14,10 @@ class MovieDetailsViewModel(private val repository: MovieRepository) : ViewModel
     private val mutableMovie = MutableLiveData<MovieWithActors>()
 
     fun getMovieById(movieId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        val handler = CoroutineExceptionHandler { context, exception ->
+            Log.d("MovieDetailsViewModel", "getMovieById exception $exception")
+        }
+        viewModelScope.launch(Dispatchers.IO + handler) {
             val movieWithActors = repository.getMovieById(movieId)
             mutableMovie.postValue(movieWithActors)
         }
