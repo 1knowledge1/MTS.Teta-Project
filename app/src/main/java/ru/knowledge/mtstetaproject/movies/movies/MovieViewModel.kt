@@ -1,12 +1,14 @@
-package ru.knowledge.mtstetaproject.movies
+package ru.knowledge.mtstetaproject.movies.movies
 
 import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import ru.knowledge.mtstetaproject.movies.data.GenreDto
-import ru.knowledge.mtstetaproject.movies.data.MovieDto
+import ru.knowledge.mtstetaproject.movies.MovieRepository
+import ru.knowledge.mtstetaproject.movies.database.dto.GenreDto
+import ru.knowledge.mtstetaproject.movies.database.dto.MovieDto
 
 
 class MovieViewModel(private val repository: MovieRepository) : ViewModel() {
@@ -20,7 +22,7 @@ class MovieViewModel(private val repository: MovieRepository) : ViewModel() {
     val errorState: LiveData<String> get() = mutableErrorState
     private val mutableErrorState = MutableLiveData<String>()
 
-    val genresChecked = mutableSetOf<Int>()
+    val genresChecked = mutableSetOf<Long>()
 
     fun refreshMovies() {
         val handler = CoroutineExceptionHandler { context, exception ->
@@ -28,8 +30,13 @@ class MovieViewModel(private val repository: MovieRepository) : ViewModel() {
             mutableErrorState.postValue("Network error")
         }
         viewModelScope.launch(Dispatchers.IO + handler) {
-            val movies = repository.getRefreshMovies()
-            mutableMovieList.postValue(movies)
+            repository.getRefreshMovies().collect {
+                it.fold(onSuccess = {
+                    mutableMovieList.postValue(it)
+                }, onFailure = {
+                    mutableErrorState.postValue("Network error")
+                })
+            }
         }
     }
 
@@ -45,9 +52,24 @@ class MovieViewModel(private val repository: MovieRepository) : ViewModel() {
     }
 
     fun getMovies() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val movies = repository.getMovies()
-            mutableMovieList.postValue(movies)
+        val handler = CoroutineExceptionHandler { context, exception ->
+            Log.d("MovieViewModel", "refreshMovies exception $exception")
+            mutableErrorState.postValue("Network error")
+        }
+        viewModelScope.launch(Dispatchers.IO + handler) {
+            repository.getMovies().collect {
+                it.fold(onSuccess = {
+                    if (genresChecked.isEmpty()) {
+                        mutableMovieList.postValue(it)
+                    } else {
+                        mutableMovieList.postValue(it.filter { movie ->
+                            genresChecked.contains(movie.genre.id)
+                        })
+                    }
+                }, onFailure = {
+                    mutableErrorState.postValue("Network error")
+                })
+            }
         }
     }
 }

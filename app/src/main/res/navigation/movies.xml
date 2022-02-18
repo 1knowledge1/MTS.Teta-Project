@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/movies_fragment"
-        android:name="ru.knowledge.mtstetaproject.movies.MoviesFragment"
+        android:name="ru.knowledge.mtstetaproject.movies.movies.MoviesFragment"
         android:label="MoviesFragment"
         tools:layout="@layout/fragment_movies">
         <action
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/movie_details_fragment"
-        android:name="ru.knowledge.mtstetaproject.movies.MovieDetailsFragment"
+        android:name="ru.knowledge.mtstetaproject.movies.detailed.MovieDetailsFragment"
         android:label="MovieDetailsFragment"
         tools:layout="@layout/fragment_movie_details" />
 

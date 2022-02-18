@@ -1,4 +1,4 @@
-package ru.knowledge.mtstetaproject.movies
+package ru.knowledge.mtstetaproject.movies.movies.recycler
 
 import android.graphics.Rect
 import android.view.View

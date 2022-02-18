@@ -1,4 +1,4 @@
-package ru.knowledge.mtstetaproject.movies
+package ru.knowledge.mtstetaproject.movies.detailed
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,10 +11,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import ru.knowledge.mtstetaproject.App
 import ru.knowledge.mtstetaproject.R
-import ru.knowledge.mtstetaproject.movies.data.MovieWithActors
+import ru.knowledge.mtstetaproject.movies.database.MovieWithActors
+import ru.knowledge.mtstetaproject.movies.detailed.recycler.ActorsAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,7 +43,7 @@ class MovieDetailsFragment : Fragment() {
 
         val movieId = arguments?.getLong(MOVIE_ID) ?: 0
         movieViewModel.movie.observe(viewLifecycleOwner, { movieWithActors ->
-            if (movieId == movieWithActors.movie.id) {
+            if (movieId == movieWithActors?.movie?.id) {
                 initViews(view, movieWithActors)
             }
         })
@@ -50,22 +53,35 @@ class MovieDetailsFragment : Fragment() {
     private fun initViews(view: View, movieWithActors: MovieWithActors) {
         val movie = movieWithActors.movie
         val actors = movieWithActors.actors
-        val ageRestriction = "${movie.ageRestriction}+"
+        val ageRestriction = movie.ageRestriction
+        val defaultName = view.context.getString(R.string.default_string)
         view.apply{
             findViewById<ImageView>(R.id.iv_movie_details_poster).load(movie.imageUrl)
-            findViewById<TextView>(R.id.tv_movie_genre).text = movie.genre.name.lowercase()
-            findViewById<TextView>(R.id.tv_movie_release_date).text = dateFormatter
-                .format(movie.releaseDate)
+            if (movie.genre.name.isEmpty()) {
+                findViewById<TextView>(R.id.tv_movie_genre).text = defaultName
+            } else {
+                findViewById<TextView>(R.id.tv_movie_genre).text = movie.genre.name.lowercase()
+            }
+            if (movie.releaseDate == Date(0)) {
+                findViewById<TextView>(R.id.tv_movie_release_date).text = defaultName
+            } else {
+                findViewById<TextView>(R.id.tv_movie_release_date).text = dateFormatter
+                    .format(movie.releaseDate)
+            }
             findViewById<TextView>(R.id.tv_movie_age_rating).text = ageRestriction
-            findViewById<TextView>(R.id.tv_movie_title).text = movie.title
+            if (movie.title.isEmpty()) {
+                findViewById<TextView>(R.id.tv_movie_title).text = defaultName
+            } else {
+                findViewById<TextView>(R.id.tv_movie_title).text = movie.title
+            }
             findViewById<TextView>(R.id.tv_movie_description).text = movie.description
-            findViewById<ImageView>(R.id.iv_actor_1).load(actors[0].imageUrl)
-            findViewById<TextView>(R.id.tv_actor_name_1).text = actors[0].name
-            findViewById<ImageView>(R.id.iv_actor_2).load(actors[1].imageUrl)
-            findViewById<TextView>(R.id.tv_actor_name_2).text = actors[1].name
-            findViewById<ImageView>(R.id.iv_actor_3).load(actors[2].imageUrl)
-            findViewById<TextView>(R.id.tv_actor_name_3).text = actors[2].name
         }
+        val actorsRecycler = view.findViewById<RecyclerView>(R.id.actor_recycler)
+        actorsRecycler.layoutManager = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.HORIZONTAL, false)
+        val actorsAdapter = ActorsAdapter()
+        actorsAdapter.setActors(actors)
+        actorsRecycler.adapter = actorsAdapter
         val iconStar = ResourcesCompat.getDrawable(
             view.context.resources,
             R.drawable.ic_rating_filled_star_16,

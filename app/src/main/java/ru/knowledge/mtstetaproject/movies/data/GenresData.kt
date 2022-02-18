@@ -1,5 +1,7 @@
 package ru.knowledge.mtstetaproject.movies.data
 
+import ru.knowledge.mtstetaproject.movies.database.dto.GenreDto
+
 class GenresData {
     fun getGenres() = listOf(
         GenreDto(28, "Боевик"),

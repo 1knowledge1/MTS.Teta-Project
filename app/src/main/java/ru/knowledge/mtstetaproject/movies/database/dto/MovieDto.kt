@@ -1,4 +1,4 @@
-package ru.knowledge.mtstetaproject.movies.data
+package ru.knowledge.mtstetaproject.movies.database.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
@@ -18,7 +18,7 @@ data class MovieDto(
     @ColumnInfo(name = "rate_score")
     val rateScore: Int,
     @ColumnInfo(name = "age_restriction")
-    val ageRestriction: Int,
+    val ageRestriction: String,
     @ColumnInfo(name = "image_url")
     val imageUrl: String,
     @Embedded

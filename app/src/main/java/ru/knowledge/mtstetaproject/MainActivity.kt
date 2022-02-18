@@ -7,7 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import ru.knowledge.mtstetaproject.movies.MovieDetailsFragment
+import ru.knowledge.mtstetaproject.movies.detailed.MovieDetailsFragment
 import ru.knowledge.mtstetaproject.movies.StartFragmentDetailsListener
 
 class MainActivity : AppCompatActivity(), StartFragmentDetailsListener {

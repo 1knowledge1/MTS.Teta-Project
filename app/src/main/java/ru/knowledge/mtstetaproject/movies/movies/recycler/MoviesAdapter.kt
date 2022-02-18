@@ -1,10 +1,11 @@
-package ru.knowledge.mtstetaproject.movies
+package ru.knowledge.mtstetaproject.movies.movies.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.knowledge.mtstetaproject.R
-import ru.knowledge.mtstetaproject.movies.data.MovieDto
+import ru.knowledge.mtstetaproject.movies.StartFragmentDetailsListener
+import ru.knowledge.mtstetaproject.movies.database.dto.MovieDto
 
 class MoviesAdapter(
     private val startListener: StartFragmentDetailsListener?
